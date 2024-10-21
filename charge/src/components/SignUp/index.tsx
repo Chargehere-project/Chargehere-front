@@ -59,7 +59,7 @@ const SignUp: React.FC = () => {
     const onFinish = async (values: any) => {
         console.log('Received values of form: ', values);
         try {
-            const response = await axios.post('http://localhost:8000/api/sign', {
+            const response = await axios.post('http://localhost:8000/signup', {
                 id: values.id,
                 password: values.password,
                 name: values.name,
@@ -170,15 +170,31 @@ const SignUp: React.FC = () => {
                 <Input />
             </Form.Item>
 
-            <Form.Item
-                name="birthday"
-                label="생년월일"
-                rules={[{ required: true, message: '생년월일을 입력해 주세요', whitespace: true }]}
-            >
-                <Input style={{ width: '30%', marginRight: '5px' }} />
-                <Input style={{ width: '25%', marginRight: '5px' }} />
-                <Input style={{ width: '25%' }} />
-            </Form.Item>
+            <Form.Item label="생년월일" required>
+  <Input.Group compact>
+    <Form.Item
+      name="birthYear"
+      noStyle
+      rules={[{ required: true, message: '년도를 입력해 주세요' }]}
+    >
+      <Input style={{ width: '30%' }} placeholder="YYYY" />
+    </Form.Item>
+    <Form.Item
+      name="birthMonth"
+      noStyle
+      rules={[{ required: true, message: '월을 입력해 주세요' }]}
+    >
+      <Input style={{ width: '25%', margin: '0 5px' }} placeholder="MM" />
+    </Form.Item>
+    <Form.Item
+      name="birthDay"
+      noStyle
+      rules={[{ required: true, message: '일을 입력해 주세요' }]}
+    >
+      <Input style={{ width: '25%' }} placeholder="DD" />
+    </Form.Item>
+  </Input.Group>
+</Form.Item>
 
             <Form.Item
                 name="phone"
