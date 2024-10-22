@@ -5,13 +5,9 @@ const Header:React.FC = () =>{
     return (<>        <Image
         src="/main.png"
         alt="logo"
-        width={200}
-        height={200}
-      />
-      <UserOutlined style={{fontSize: '50px'}}/>
-      <ShopOutlined style={{fontSize: '50px'}}/>
-    </>
-      )
-}
 
-export default Header
+        width={300}
+        height={300}
+      />
+      <UserOutlined style={{fontSize: '30px'}}/>
+      <ShopOutlined style={{fontSize: '30px'}}/>
