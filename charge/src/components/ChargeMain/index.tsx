@@ -4,7 +4,8 @@ import MainSwipe from './Swipe';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { RobotFilled } from '@ant-design/icons';
-import Coupon from './coupon';
+import Coupon from './Coupon';
+import Roulette from '../Roulette';
 
 const Main: React.FC = () => {
     const [announcement, setAnnouncement] = useState<string>('');
@@ -35,6 +36,8 @@ const Main: React.FC = () => {
     const notice = () =>{
         Router.push('/notice')
     }
+    const rouletteItems = ['상품1', '상품2', '상품3', '상품4', '상품5', '상품6'];
+    
     return (
         <>
             <Header />
@@ -52,6 +55,7 @@ const Main: React.FC = () => {
             <div>공지</div>
             <div className="announcement" onClick={notice}>{announcement}</div>
             <Coupon/>
+            <Roulette items={rouletteItems} />
         </>
     );
 };
