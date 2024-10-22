@@ -2,7 +2,7 @@ import Image from 'next/image'
 import { UserOutlined, ShopOutlined} from '@ant-design/icons';
 
 const Header:React.FC = () =>{
-    return (<>        <Image
+    return (<>       <Image
         src="/main.png"
         alt="logo"
 
@@ -11,3 +11,4 @@ const Header:React.FC = () =>{
       />
       <UserOutlined style={{fontSize: '30px'}}/>
       <ShopOutlined style={{fontSize: '30px'}}/>
+  </>)}
