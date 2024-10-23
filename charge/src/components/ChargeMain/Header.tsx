@@ -1,14 +1,17 @@
-import Image from 'next/image'
-import { UserOutlined, ShopOutlined} from '@ant-design/icons';
+import Image from 'next/image';
+import { UserOutlined, ShopOutlined } from '@ant-design/icons';
 
-const Header:React.FC = () =>{
-    return (<>       <Image
-        src="/main.png"
-        alt="logo"
+const Header: React.FC = () => {
+  return (
+    <header style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', }}>
+      <Image src="/main.png" alt="logo" width={100} height={50} />
 
-        width={300}
-        height={300}
-      />
-      <UserOutlined style={{fontSize: '30px'}}/>
-      <ShopOutlined style={{fontSize: '30px'}}/>
-  </>)}
+      <div>
+        <UserOutlined style={{ fontSize: '30px', marginRight: '20px' }} />
+        <ShopOutlined style={{ fontSize: '30px' }} />
+      </div>
+    </header>
+  );
+};
+
+export default Header;
