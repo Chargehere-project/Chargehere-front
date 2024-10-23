@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './page.module.css';
 import CountUp from 'react-countup';
+import Link from 'next/link';  // Link 컴포넌트 사용
 
 const MainBanner: React.FC = () => {
     const secondSectionRef = useRef<HTMLDivElement | null>(null);
@@ -55,8 +56,14 @@ const MainBanner: React.FC = () => {
             <div className={styles.mainBanner}>
                 <div className={styles.bannerContent}>
                     <h1 className={styles.fadeIn}>충전이 필요한 모든 순간, ChargeHere</h1>
-                    <button className={styles.fadeInButton}>홈페이지로 바로 가기</button>
-                    <button className={styles.fadeInButton}>쇼핑몰로 바로 가기</button>
+                    <Link href="/chargemain">
+                        <button className={styles.fadeInButton}>홈페이지로 바로 가기</button>
+                    </Link>
+
+                    <Link href="/mall">
+                        <button className={styles.fadeInButton}>쇼핑몰로 바로 가기</button>
+                    </Link>
+                    
                 </div>
             </div>
 

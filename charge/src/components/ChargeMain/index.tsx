@@ -3,8 +3,9 @@ import Header from './Header';
 import MainSwipe from './Swipe';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { RobotFilled } from '@ant-design/icons';
-import Coupon from './coupon';
+import Coupon from './Coupon';
+import Footer from './Footer';
+import styles from './Index.module.css';
 
 const Main: React.FC = () => {
     const [announcement, setAnnouncement] = useState<string>('');
@@ -22,36 +23,36 @@ const Main: React.FC = () => {
         fetchAnnouncement();
     }, []);
 
-    const place = () => {
-        Router.push('place');
-    };
-    const cash = () => {
-        Router.push('/cash');
+    const handleNavigation = (path: string) => {
+        Router.push(path);
     };
 
-    const charge = () => {
-        Router.push('/charge');
-    };
-    const notice = () =>{
-        Router.push('/notice')
-    }
     return (
         <>
             <Header />
-            <div>로그인 후 이용 가능합니다.</div>
-            <MainSwipe />
-            <div onClick={place} style={{ width: '200px', height: '200px', backgroundColor: 'red' }}>
-                충전소 찾기
+            <div className={styles.container}>
+                <p className={styles.loginNotice}>로그인 후 이용 가능합니다.</p>
+                <MainSwipe />
+                <div className={styles.buttonContainer}>
+                    <div className={styles.button} onClick={() => handleNavigation('/place')}>충전소 찾기</div>
+                    <div className={styles.button} onClick={() => handleNavigation('/cash')}>요금 안내</div>
+                    <div className={styles.button} onClick={() => handleNavigation('/charge')}>충전하기</div>
+                </div>
+                <div className={styles.announcementContainer}>
+                    <h2>공지</h2>
+                    <div className={styles.announcement} onClick={() => handleNavigation('/notice')}>
+                        {announcement || '공지사항이 없습니다.'}
+                    </div>
+                </div>
+
+
+                <Coupon />
+                {/* 띠 배너 */}
+                <div className={styles.banner} onClick={() => handleNavigation('/mall')}>
+                    <p>지금 Chargemall에서 다양한 혜택을 만나보세요! →</p>
+                </div>
             </div>
-            <div onClick={cash} style={{ width: '200px', height: '200px', backgroundColor: 'red' }}>
-                요금 안내
-            </div>
-            <div onClick={charge} style={{ width: '200px', height: '200px', backgroundColor: 'red' }}>
-                충전하기
-            </div>
-            <div>공지</div>
-            <div className="announcement" onClick={notice}>{announcement}</div>
-            <Coupon/>
+            <Footer  />
         </>
     );
 };

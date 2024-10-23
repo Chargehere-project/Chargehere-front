@@ -1,4 +1,4 @@
-import Main from "@/components/ChargeMain";
+import Main from "@/components/ChargeMain/Index";
 
 const MainPage: React.FC = () => {
     return (
