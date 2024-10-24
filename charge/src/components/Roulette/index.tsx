@@ -1,105 +1,220 @@
-import React, { useState } from 'react';
-import styles from './Roulette.module.css';
+import { useEffect, useRef } from 'react';
+import axios from 'axios';
+import {jwtDecode} from 'jwt-decode'; 
 
-interface RouletteProps {
-  items: string[];
+const Roulette = () => {
+   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+   const product = [
+       "꽝", '500P', "300P", "꽝", "700P", "최고급 세단",
+   ];
+   
+   const colors = [
+       "#dc0936", "#531de6", "#f7a416", "#efe61f ", "#60b236", 
+       "#209b6c","#209b6c"]
+
+   useEffect(() => {
+       const canvas = canvasRef.current;
+       if (!canvas) return;
+
+       const ctx = canvas.getContext('2d');
+       if (!ctx) return;
+
+       // newMake 함수 내용
+       const [cw, ch] = [canvas.width / 2, canvas.height / 2];
+       const arc = Math.PI / (product.length / 2);
+
+       // 룰렛 섹션 그리기
+       for (let i = 0; i < product.length; i++) {
+           ctx.beginPath();
+           ctx.fillStyle = colors[i % (colors.length - 1)];
+           ctx.moveTo(cw, ch);
+           ctx.arc(cw, ch, cw, arc * (i - 1), arc * i);
+           ctx.fill();
+           ctx.closePath();
+       }
+
+       // 텍스트 스타일 설정
+       ctx.fillStyle = "#fff";
+       ctx.font = "18px Pretendard";
+       ctx.textAlign = "center";
+
+       // 텍스트 그리기
+       for (let i = 0; i < product.length; i++) {
+           const angle = (arc * i) + (arc / 2);
+
+           ctx.save();
+
+           ctx.translate(
+               cw + Math.cos(angle) * (cw - 50),
+               ch + Math.sin(angle) * (ch - 50),
+           );
+
+           ctx.rotate(angle + Math.PI / 2);
+
+           product[i].split(" ").forEach((text, j) => {
+               ctx.fillText(text, 0, 30 * j);
+           });
+
+           ctx.restore();
+       }
+   }, []); // 빈 배열은 컴포넌트가 마운트될 때 한 번만 실행됨을 의미
+
+
+   const token = () => {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    
+    try {
+        const decoded: any = jwtDecode(token);
+        return decoded.UserID;  // 토큰에서 UserID를 추출
+    } catch (error) {
+        console.error('토큰 디코드 에러:', error);
+        return null;
+    }
+};
+
+const awardPoints = async (reward: string) => {
+  try {
+      const userId = token();  // 토큰에서 userId 가져오기
+      if (!userId) {
+          alert('로그인이 필요합니다.');
+          return;
+      }
+
+      let points = 0;
+      if (reward === '500P') {
+          points = 500;
+      } else if (reward === '300P') {
+          points = 300;
+      } else if (reward === '700P') {
+          points = 700;
+      }
+
+      if (points > 0) {
+          const response = await axios.post('http://localhost:8000/everydayevent', {
+              userId: userId,  // 실제 사용자 ID 사용
+              points: points,
+              reward: reward
+          }, {
+              headers: {
+                  Authorization: `Bearer ${localStorage.getItem('token')}`
+              }
+          });
+
+          if (response.data.success) {
+              alert(`축하합니다! ${reward} 가 지급되었습니다!`);
+          }
+      }
+  } catch (error) {
+      console.error('포인트 지급 중 오류:', error);
+      alert('포인트 지급 중 오류가 발생했습니다.');
+  }
+};
+
+// 오전 6시 체크 함수
+const checkResetTime = () => {
+  const now = new Date();
+  const resetTime = new Date(now);
+  resetTime.setHours(6, 0, 0, 0);  // 오전 6시로 설정
+
+   // 현재 시간이 오전 6시 이후라면 다음 날 오전 6시로 설정
+  if (now >= resetTime) {
+    resetTime.setDate(resetTime.getDate() + 1);
 }
 
-const Roulette: React.FC<RouletteProps> = ({ items }) => {
-  const [rotation, setRotation] = useState(0);
-  const [isSpinning, setIsSpinning] = useState(false);
-  const [result, setResult] = useState<string>('');
-  const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD', '#D4A5A5'];
-  const centerX = 150; // SVG 중심 X 좌표
-  const centerY = 150; // SVG 중심 Y 좌표
-  const radius = 150; // 원의 반지름
+  return resetTime;
+};
 
-  // 각 섹션의 경로 계산
-  const createSectorPath = (startAngle: number, endAngle: number) => {
-    const start = polarToCartesian(centerX, centerY, radius, endAngle);
-    const end = polarToCartesian(centerX, centerY, radius, startAngle);
-    const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
-    
-    return [
-      "M", centerX, centerY,
-      "L", start.x, start.y,
-      "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y,
-      "Z"
-    ].join(" ");
+// localStorage 저장 함수
+const setLastPlayTime = () => {
+  const obj = {
+      lastPlayed: new Date().getTime(),  // 현재 시간 저장
+      nextReset: checkResetTime().getTime()  // 다음 초기화 시간 저장
   };
+  localStorage.setItem('roulettePlay', JSON.stringify(obj));
+};
 
-  // 극좌표를 직교좌표로 변환
-  const polarToCartesian = (centerX: number, centerY: number, radius: number, angleInDegrees: number) => {
-    const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
-    return {
-      x: centerX + (radius * Math.cos(angleInRadians)),
-      y: centerY + (radius * Math.sin(angleInRadians))
-    };
-  };
+// 플레이 가능 여부 체크 함수
+const canPlay = () => {
+  const playData = localStorage.getItem('roulettePlay');
+  if (!playData) return true;  // 데이터가 없으면 플레이 가능
 
-    // getResult 함수 추가
-    const getResult = (rotation: number) => {
-        const normalizedRotation = rotation % 360;
-        const sectionIndex = Math.floor(normalizedRotation / 60);
-        return items[sectionIndex];
-      };
-
-  const spinWheel = () => {
-    if (!isSpinning) {
-      setIsSpinning(true);
-      const randomRotation = Math.floor(Math.random() * 360) + 3600;
-      setRotation(prev => prev + randomRotation);
-      
-      setTimeout(() => {
-        setIsSpinning(false);
-      }, 5000);
-    }
-  };
+  const { lastPlayed, nextReset } = JSON.parse(playData);
+  const now = new Date().getTime();
   
+  // 현재 시간이 마지막 초기화 시간을 지났는지 확인
+  return now >= nextReset;
+};
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.wheelContainer}>
-        <svg 
-          className={styles.wheel} 
-          viewBox="0 0 300 300"
-          style={{ transform: `rotate(${rotation}deg)` }}
-        >
-          {items.map((item, index) => {
-            const startAngle = (index * 60);
-            const endAngle = ((index + 1) * 60);
-            return (
-              <g key={index}>
-                <path
-                  d={createSectorPath(startAngle, endAngle)}
-                  fill={colors[index]}
-                  stroke="#fff"
-                  strokeWidth="2"
-                />
-                <text
-                  x={centerX}
-                  y={centerY}
-                  transform={`rotate(${startAngle + 30}, ${centerX}, ${centerY}) translate(0, -${radius/2})`}
-                  textAnchor="middle"
-                  className={styles.sectionText}
-                >
-                  {item}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
-        <div className={styles.pointer}></div>
-      </div>
-      <button 
-        className={styles.button} 
-        onClick={spinWheel} 
-        disabled={isSpinning}
-      >
-        {isSpinning ? '돌아가는 중...' : '돌리기'}
-      </button>
-    </div>
-  );
+
+   // 회전 함수
+   const handleRotate = () => {
+
+    if (!canPlay()) {
+      alert('오늘은 이미 룰렛을 돌리셨습니다. 내일 오전 6시 이후에 다시 시도해주세요.');
+      return;
+  }
+
+       const canvas = canvasRef.current;
+       if (!canvas) return;
+
+       canvas.style.transform = `initial`;
+       canvas.style.transition = `initial`;
+       
+
+       setTimeout(() => {
+        // 여기서 당첨 위치가 결정됨
+        const ran = Math.floor(Math.random() * product.length); // 랜덤으로 섹션 선택
+        const arc = 360 / product.length;  // 각 섹션의 각도
+        const rotate = (ran * arc) + 3600 + 120;// 회전할 총 각도 계산
+        
+        canvas.style.transform = `rotate(-${rotate}deg)`;  // 실제 회전
+           canvas.style.transition = `2s`;
+           
+           setTimeout(() => {
+            const reward = product[ran];
+            alert(`${reward} 에 당첨되셨습니다.`);
+            setLastPlayTime();  
+            awardPoints(reward);  // 당첨된 상품에 따라 포인트 지급
+        }, 2000);
+    }, 1);
+   };
+
+   // 스타일 정의
+   const containerStyle = {
+       display: 'flex',
+       flexDirection: 'column' as 'column',
+       alignItems: 'center',
+       gap: '20px',
+       padding: '20px'
+   };
+
+   const buttonStyle = {
+       padding: '10px 20px',
+       fontSize: '16px',
+       backgroundColor: '#007bff',
+       color: 'white',
+       border: 'none',
+       borderRadius: '5px',
+       cursor: 'pointer'
+   };
+
+   return (
+       <div style={containerStyle}>
+           <canvas 
+               ref={canvasRef} 
+               width="500" 
+               height="500" 
+           />
+           <button 
+               onClick={handleRotate} 
+               style={buttonStyle}
+           >
+               룰렛 돌리기
+           </button>
+       </div>
+   );
 };
 
 export default Roulette;

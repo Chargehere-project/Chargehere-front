@@ -7,6 +7,7 @@ import { RobotFilled } from '@ant-design/icons';
 import Coupon from './Coupon';
 import Roulette from '../Roulette';
 
+
 const Main: React.FC = () => {
     const [announcement, setAnnouncement] = useState<string>('');
 
@@ -55,7 +56,7 @@ const Main: React.FC = () => {
             <div>공지</div>
             <div className="announcement" onClick={notice}>{announcement}</div>
             <Coupon/>
-            <Roulette items={rouletteItems} />
+           <Roulette/>
         </>
     );
 };

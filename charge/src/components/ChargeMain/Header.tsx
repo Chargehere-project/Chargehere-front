@@ -12,3 +12,5 @@ const Header:React.FC = () =>{
       <UserOutlined style={{fontSize: '30px'}}/>
       <ShopOutlined style={{fontSize: '30px'}}/>
   </>)}
+
+  export default Header
