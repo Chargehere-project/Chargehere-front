@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import ReviewItem from '../../components/reviews/reviews'; 
+import ReviewItem from '../../components/Reviews/reviews'; 
 
 interface Review {
   reviewId: number;
