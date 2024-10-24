@@ -6,7 +6,7 @@ const MallIndex: React.FC = () => {
   return (
     <div>
       <Header />
-      {/* 광고 배너 섹션 */}
+      
       <Swipe />
 
       {/* 제품 리스트 섹션 */}
