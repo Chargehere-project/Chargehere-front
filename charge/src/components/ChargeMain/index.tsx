@@ -3,7 +3,9 @@ import Header from './Header';
 import MainSwipe from './Swipe';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { RobotFilled } from '@ant-design/icons';
 import Coupon from './Coupon';
+import Roulette from '../Roulette';
 import Footer from './Footer';
 import styles from './Index.module.css';
 
@@ -27,6 +29,14 @@ const Main: React.FC = () => {
         Router.push(path);
     };
 
+    const charge = () => {
+        Router.push('/charge');
+    };
+    const notice = () =>{
+        Router.push('/notice')
+    }
+    const rouletteItems = ['상품1', '상품2', '상품3', '상품4', '상품5', '상품6'];
+    
     return (
         <>
             <Header />
