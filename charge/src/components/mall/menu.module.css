@@ -1,0 +1,31 @@
+.navbar {
+    width: 100%;
+    background-color: white;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navList {
+    display: flex;
+    justify-content: space-around; /* 메뉴 항목을 균등하게 배치 */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navItem {
+    font-size: 1.2em;
+    font-weight: bold;
+  }
+  
+  .navItem a {
+    text-decoration: none;
+    color: black;
+    padding: 10px 20px;
+    transition: color 0.3s ease;
+  }
+  
+  .navItem a:hover {
+    color: #007bff; /* 마우스 호버 시 색상 변경 */
+  }
+  
