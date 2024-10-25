@@ -16,6 +16,7 @@ const Main: React.FC = () => {
         const fetchAnnouncement = async () => {
             try {
                 const response = await axios.get('http://localhost:8000/notice');
+                
                 setAnnouncement(response.data.data); // 백엔드 응답 구조에 따라 조정
             } catch (error) {
                 console.error('공지사항을 가져오는 데 실패했습니다:', error);
@@ -35,7 +36,6 @@ const Main: React.FC = () => {
     const notice = () =>{
         Router.push('/notice')
     }
-    const rouletteItems = ['상품1', '상품2', '상품3', '상품4', '상품5', '상품6'];
     
     return (
         <>
@@ -44,7 +44,7 @@ const Main: React.FC = () => {
                 <p className={styles.loginNotice}>로그인 후 이용 가능합니다.</p>
                 <MainSwipe />
                 <div className={styles.buttonContainer}>
-                    <div className={styles.button} onClick={() => handleNavigation('/place')}>충전소 찾기</div>
+                    <div className={styles.button} onClick={() => handleNavigation('/map')}>충전소 찾기</div>
                     <div className={styles.button} onClick={() => handleNavigation('/cash')}>요금 안내</div>
                     <div className={styles.button} onClick={() => handleNavigation('/charge')}>충전하기</div>
                 </div>
@@ -60,6 +60,10 @@ const Main: React.FC = () => {
                 {/* 띠 배너 */}
                 <div className={styles.banner} onClick={() => handleNavigation('/mall')}>
                     <p>지금 Chargemall에서 다양한 혜택을 만나보세요! →</p>
+                </div>
+                <div>
+                    <p>출석만 해도 포인트가!</p>
+                    <Roulette/>
                 </div>
             </div>
             <Footer  />

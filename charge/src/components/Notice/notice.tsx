@@ -14,14 +14,16 @@ interface Notice {
 const NoticePage: React.FC = () => {
   const [notices, setNotices] = useState<Notice[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [noticesPerPage] = useState<number>(8);  // 한 페이지에 8개의 공지사항 표시
+  const [noticesPerPage] = useState<number>(10);  // 한 페이지에 8개의 공지사항 표시
 
   // 공지사항 데이터를 가져오는 함수
   useEffect(() => {
     const fetchNotices = async () => {
       try {
-        const response = await axios.get('/api/notices'); // API 엔드포인트 맞추기
-        setNotices(response.data);
+        const response = await axios.get('http://localhost:8000/notices'); // API 엔드포인트 맞추기
+        console.log(response.data.result);
+        
+        setNotices(response.data.result);
       } catch (error) {
         console.error('공지사항을 불러오는 중 오류가 발생했습니다.', error);
       }
