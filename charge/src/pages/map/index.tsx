@@ -8,7 +8,7 @@ const NoticePage: React.FC = () => {
     <div>
         <Header  />
         {/* Notice 컴포넌트를 렌더링 */}
-        <Map/>
+        <Map />
       {/* <Footer  /> */}
     </div>
   );
